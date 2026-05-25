@@ -100,16 +100,19 @@
 
     /* ========== Tabs ========== */
     .app-tabs {
-      position: fixed;
-      top: var(--header-h); left: 0; right: 0;
+      position: fixed !important;
+      top: var(--header-h) !important;
+      left: 0 !important;
+      right: 0 !important;
       height: var(--tabs-h);
       background: #fff;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       padding: 0 24px;
-      z-index: 999;
+      z-index: 1100;  /* 高于 sidebar(docsify 默认 z-index 通常 ≤ 1000) */
       overflow-x: auto;
+      box-shadow: 0 1px 2px rgba(0,0,0,.03);
     }
     .app-tab {
       padding: 0 18px; height: 100%;
@@ -137,6 +140,7 @@
       width: var(--sidebar-w) !important;
       background: var(--sidebar-bg) !important;
       border-right: 1px solid var(--border-color) !important;
+      z-index: 100 !important;  /* 远低于 tabs 的 1100 */
     }
     .sidebar > h1 { display: none; }
     .sidebar-nav { margin: 16px 0; padding: 0 16px; }
