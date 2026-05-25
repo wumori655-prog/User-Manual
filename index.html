@@ -14,10 +14,8 @@
       --text-light: #6b7280;
       --bg-color: #fafbfc;
       --sidebar-bg: #ffffff;
-      --header-h: 56px;
-      --tabs-h: 44px;
-      --top-h: 100px;
-      --sidebar-w: 280px;
+      --header-h: 56px;       /* 现在只有 1 行 header */
+      --sidebar-w: 260px;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Roboto, sans-serif;
@@ -25,7 +23,7 @@
       color: var(--text-color);
     }
 
-    /* ========== Header ========== */
+    /* ========== 顶部 Header(Logo + Tabs + Search 同一行) ========== */
     .app-header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -34,10 +32,13 @@
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      padding: 0 24px;
-      z-index: 1000;
+      padding: 0 16px 0 20px;
+      z-index: 1100;
       box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      gap: 16px;
     }
+
+    /* Logo */
     .app-logo {
       display: flex; align-items: center; gap: 10px;
       flex-shrink: 0; text-decoration: none; color: var(--text-color);
@@ -52,70 +53,23 @@
     .app-logo-text .t1 { font-size: 14px; font-weight: 600; }
     .app-logo-text .t2 { font-size: 11px; color: var(--text-light); }
 
-    /* 搜索框 */
-    .app-search-wrap {
-      flex: 1; display: flex; justify-content: center; padding: 0 24px;
+    /* 分隔竖线 */
+    .app-divider {
+      width: 1px; height: 24px; background: var(--border-color);
+      flex-shrink: 0;
     }
-    .app-search { position: relative; width: 100%; max-width: 520px; }
-    .app-search input {
-      width: 100%; padding: 9px 36px 9px 38px;
-      font-size: 13.5px; border: 1px solid var(--border-color);
-      border-radius: 6px; background: var(--bg-color);
-      outline: none; transition: all .15s; box-sizing: border-box;
-    }
-    .app-search input:focus {
-      border-color: var(--theme-color); background: #fff;
-      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
-    }
-    .app-search .search-icon {
-      position: absolute; left: 14px; top: 50%;
-      transform: translateY(-50%); color: var(--text-light);
-      font-size: 16px; pointer-events: none;
-    }
-    .app-search .clear-btn {
-      position: absolute; right: 10px; top: 50%;
-      transform: translateY(-50%); background: none; border: none;
-      color: var(--text-light); cursor: pointer; font-size: 16px;
-      display: none; padding: 2px 6px;
-    }
-    .app-search.has-text .clear-btn { display: block; }
-    .app-search .search-results {
-      position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-      max-height: 480px; overflow-y: auto;
-      background: #fff; border: 1px solid var(--border-color);
-      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.08);
-      z-index: 1100; display: none;
-    }
-    .app-search.active .search-results { display: block; }
-    .result-item {
-      padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f3f4f6;
-      transition: background .12s;
-    }
-    .result-item:hover, .result-item.active { background: var(--theme-color-light); }
-    .result-item-title { font-size: 13.5px; font-weight: 600; color: var(--text-color); }
-    .result-item-path { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
-    .result-item-snippet { font-size: 12px; color: var(--text-light); margin-top: 4px; line-height: 1.5; }
-    .result-item-snippet mark { background: #fef3c7; color: #92400e; padding: 0 2px; border-radius: 2px; }
-    .result-empty { padding: 20px; text-align: center; color: var(--text-light); font-size: 13px; }
 
-    /* ========== Tabs ========== */
+    /* Tabs(顶部模块切换) */
     .app-tabs {
-      position: fixed !important;
-      top: var(--header-h) !important;
-      left: 0 !important;
-      right: 0 !important;
-      height: var(--tabs-h);
-      background: #fff;
-      border-bottom: 1px solid var(--border-color);
+      flex: 1;
       display: flex;
       align-items: center;
-      padding: 0 24px;
-      z-index: 1100;  /* 高于 sidebar(docsify 默认 z-index 通常 ≤ 1000) */
+      gap: 4px;
       overflow-x: auto;
-      box-shadow: 0 1px 2px rgba(0,0,0,.03);
+      height: 100%;
     }
     .app-tab {
-      padding: 0 18px; height: 100%;
+      padding: 0 14px; height: 100%;
       display: flex; align-items: center; gap: 6px;
       font-size: 13.5px; color: var(--text-light);
       cursor: pointer; text-decoration: none;
@@ -130,17 +84,101 @@
     }
     .app-tab .icon { font-size: 14px; }
 
-    /* ========== docsify 主区域调整 ========== */
-    body.ready { padding-top: var(--top-h); }
+    /* ========== 搜索(默认折叠成图标 + 点击展开) ========== */
+    .app-search {
+      position: relative;
+      flex-shrink: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+    /* 默认:只显示图标按钮 */
+    .app-search-toggle {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-light);
+      cursor: pointer;
+      font-size: 16px;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .app-search-toggle:hover {
+      border-color: var(--theme-color);
+      color: var(--theme-color);
+    }
+    /* 展开态:输入框宽度 300px,从右向左展开 */
+    .app-search-input-wrap {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 0;
+      height: 36px;
+      overflow: hidden;
+      transition: width .25s ease;
+      display: flex;
+      align-items: center;
+    }
+    .app-search.active .app-search-input-wrap {
+      width: 300px;
+    }
+    .app-search.active .app-search-toggle {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .app-search input {
+      width: 100%;
+      padding: 0 36px 0 14px;
+      height: 36px;
+      font-size: 13.5px;
+      border: 1px solid var(--theme-color);
+      border-radius: 8px;
+      background: #fff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+      box-sizing: border-box;
+    }
+    .app-search .clear-btn {
+      position: absolute; right: 8px; top: 50%;
+      transform: translateY(-50%); background: none; border: none;
+      color: var(--text-light); cursor: pointer; font-size: 18px;
+      padding: 4px 8px; line-height: 1;
+    }
+    .app-search .clear-btn:hover { color: var(--text-color); }
 
-    /* docsify sidebar 调整 */
+    /* 搜索结果下拉 */
+    .search-results {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      width: 420px;
+      max-height: 480px; overflow-y: auto;
+      background: #fff; border: 1px solid var(--border-color);
+      border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      z-index: 1200; display: none;
+    }
+    .app-search.has-results .search-results { display: block; }
+    .result-item {
+      padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f3f4f6;
+      transition: background .12s;
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item:hover, .result-item.active { background: var(--theme-color-light); }
+    .result-item-title { font-size: 13.5px; font-weight: 600; color: var(--text-color); }
+    .result-item-path { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+    .result-item-snippet { font-size: 12px; color: var(--text-light); margin-top: 4px; line-height: 1.5; }
+    .result-item-snippet mark { background: #fef3c7; color: #92400e; padding: 0 2px; border-radius: 2px; }
+    .result-empty { padding: 20px; text-align: center; color: var(--text-light); font-size: 13px; }
+
+    /* ========== docsify 主区域调整 ========== */
+    body.ready { padding-top: var(--header-h); }
+
     .sidebar {
-      top: var(--top-h) !important;
+      top: var(--header-h) !important;
       padding-top: 0 !important;
       width: var(--sidebar-w) !important;
       background: var(--sidebar-bg) !important;
       border-right: 1px solid var(--border-color) !important;
-      z-index: 100 !important;  /* 远低于 tabs 的 1100 */
     }
     .sidebar > h1 { display: none; }
     .sidebar-nav { margin: 16px 0; padding: 0 16px; }
@@ -164,9 +202,8 @@
       border-right: 2px solid var(--theme-color);
     }
 
-    /* 内容区 */
     .content {
-      top: var(--top-h) !important;
+      top: var(--header-h) !important;
       left: var(--sidebar-w) !important;
       right: 0 !important;
       padding-top: 0 !important;
@@ -213,56 +250,55 @@
       background: transparent; color: #e2e8f0;
     }
 
-    /* 隐藏 docsify 默认 sidebar-toggle */
     .sidebar-toggle { display: none !important; }
 
     @media (max-width: 768px) {
       :root { --sidebar-w: 0; }
       .content { left: 0 !important; }
       .markdown-section { padding: 16px 20px !important; }
-      .app-search { max-width: 100%; }
+      .app-logo-text { display: none; }
+      .app-search.active .app-search-input-wrap { width: 200px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ========== Header ========== -->
+<!-- ========== 顶部:Logo + Tabs + Search 同一行 ========== -->
 <header class="app-header">
   <a class="app-logo" href="#/">
     <div class="app-logo-mark">运</div>
     <div class="app-logo-text">
       <div class="t1">运营功能说明</div>
-      <div class="t2">TMS 操盘系统 · 按钮 SOP</div>
+      <div class="t2">TMS 操盘系统</div>
     </div>
   </a>
-  <div class="app-search-wrap">
-    <div class="app-search" id="appSearch">
-      <span class="search-icon">⌕</span>
-      <input id="searchInput" type="text" placeholder="搜索按钮 / 模块 / 操作 (按 / 聚焦)" autocomplete="off">
+  <div class="app-divider"></div>
+  <nav class="app-tabs" id="appTabs">
+    <a class="app-tab" data-module="01-联赛管理" href="#/01-联赛管理">
+      <span class="icon">🏆</span><span>联赛管理</span>
+    </a>
+    <a class="app-tab" data-module="02-操盘列表" href="#/02-操盘列表">
+      <span class="icon">📋</span><span>操盘列表</span>
+    </a>
+    <a class="app-tab" data-module="03-操盘详情" href="#/03-操盘详情">
+      <span class="icon">⚙️</span><span>操盘详情</span>
+    </a>
+    <a class="app-tab" data-module="04-结算管理" href="#/04-结算管理">
+      <span class="icon">💰</span><span>结算管理</span>
+    </a>
+    <a class="app-tab" data-module="05-结算详情" href="#/05-结算详情">
+      <span class="icon">📊</span><span>结算详情</span>
+    </a>
+  </nav>
+  <div class="app-search" id="appSearch">
+    <button class="app-search-toggle" id="searchToggle" title="搜索 (按 / 聚焦)">⌕</button>
+    <div class="app-search-input-wrap">
+      <input id="searchInput" type="text" placeholder="搜索按钮 / 模块 / 操作" autocomplete="off">
       <button class="clear-btn" id="clearBtn">×</button>
-      <div class="search-results" id="searchResults"></div>
     </div>
+    <div class="search-results" id="searchResults"></div>
   </div>
 </header>
-
-<!-- ========== Tabs ========== -->
-<nav class="app-tabs" id="appTabs">
-  <a class="app-tab" data-module="01-联赛管理" href="#/01-联赛管理">
-    <span class="icon">🏆</span><span>联赛管理</span>
-  </a>
-  <a class="app-tab" data-module="02-操盘列表" href="#/02-操盘列表">
-    <span class="icon">📋</span><span>操盘列表</span>
-  </a>
-  <a class="app-tab" data-module="03-操盘详情" href="#/03-操盘详情">
-    <span class="icon">⚙️</span><span>操盘详情</span>
-  </a>
-  <a class="app-tab" data-module="04-结算管理" href="#/04-结算管理">
-    <span class="icon">💰</span><span>结算管理</span>
-  </a>
-  <a class="app-tab" data-module="05-结算详情" href="#/05-结算详情">
-    <span class="icon">📊</span><span>结算详情</span>
-  </a>
-</nav>
 
 <!-- ========== docsify 渲染区 ========== -->
 <div id="app"></div>
@@ -276,7 +312,6 @@
     auto2top: true,
     maxLevel: 4,
     subMaxLevel: 3,
-    search: 'auto',
     notFoundPage: true,
     relativePath: false,
     alias: {
@@ -285,7 +320,6 @@
     plugins: [
       function (hook) {
         hook.doneEach(function () {
-          // 当前 hash 变化时高亮顶部 Tab
           const hash = location.hash.replace(/^#\//, '');
           const tabs = document.querySelectorAll('.app-tab');
           tabs.forEach(t => {
@@ -301,15 +335,14 @@
   };
 </script>
 <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
 
 <script>
-/* ========== 顶部全文搜索(自定义,跨所有 5 份运营文档) ========== */
+/* ========== 搜索功能(默认折叠 + 点击展开) ========== */
 (function () {
+  const wrap = document.getElementById('appSearch');
+  const toggle = document.getElementById('searchToggle');
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
-  const wrap = document.getElementById('appSearch');
   const clearBtn = document.getElementById('clearBtn');
 
   const FILES = [
@@ -320,7 +353,7 @@
     { path: '05-结算详情.md', title: '结算详情' },
   ];
 
-  let docs = []; // { path, title, sections: [{heading, body}] }
+  let docs = [];
   let loaded = false, loading = false;
   let activeIdx = -1;
 
@@ -332,7 +365,6 @@
         const r = await fetch(f.path);
         if (!r.ok) continue;
         const text = await r.text();
-        // 按二级/三级标题切片
         const lines = text.split('\n');
         const sections = [];
         let cur = { heading: f.title + ' · 总览', body: '' };
@@ -355,6 +387,9 @@
     loading = false;
   }
 
+  function escapeHtml(str) {
+    return str.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  }
   function highlight(text, q) {
     if (!q) return text;
     const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
@@ -363,10 +398,10 @@
 
   function search(q) {
     q = q.trim();
-    if (!q) { clearSearch(); return; }
+    if (!q) { results.innerHTML = ''; wrap.classList.remove('has-results'); return; }
     if (!loaded) {
       results.innerHTML = '<div class="result-empty">正在构建索引...</div>';
-      wrap.classList.add('active');
+      wrap.classList.add('has-results');
       return;
     }
     const hits = [];
@@ -376,7 +411,6 @@
         const h = (s.heading || '').toLowerCase();
         const b = (s.body || '').toLowerCase();
         if (h.includes(ql) || b.includes(ql)) {
-          // 找上下文片段
           let idx = b.indexOf(ql);
           let snippet = '';
           if (idx >= 0) {
@@ -386,15 +420,8 @@
           } else {
             snippet = s.body.substring(0, 80);
           }
-          // 锚点
           const slug = s.heading.replace(/[【】\[\]\(\)（）.,，。·\s\/]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
-          hits.push({
-            path: d.path,
-            module: d.title,
-            heading: s.heading,
-            snippet,
-            slug,
-          });
+          hits.push({ path: d.path, module: d.title, heading: s.heading, snippet, slug });
           if (hits.length >= 30) break;
         }
       }
@@ -405,13 +432,13 @@
     } else {
       results.innerHTML = hits.map(h => `
         <div class="result-item" data-path="${h.path}" data-slug="${h.slug}">
-          <div class="result-item-title">${highlight(h.heading, q)}</div>
+          <div class="result-item-title">${highlight(escapeHtml(h.heading), q)}</div>
           <div class="result-item-path">${h.module}</div>
-          <div class="result-item-snippet">${highlight(h.snippet.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])), q)}</div>
+          <div class="result-item-snippet">${highlight(escapeHtml(h.snippet), q)}</div>
         </div>
       `).join('');
     }
-    wrap.classList.add('active');
+    wrap.classList.add('has-results');
     activeIdx = -1;
     results.querySelectorAll('.result-item').forEach(el => {
       el.addEventListener('click', () => {
@@ -419,39 +446,47 @@
         const slug = el.getAttribute('data-slug');
         const hashPath = path.replace(/\.md$/, '');
         location.hash = '#/' + hashPath + (slug ? ('?id=' + slug) : '');
-        clearSearch();
+        closeSearch();
       });
     });
   }
 
-  function clearSearch() {
+  function openSearch() {
+    wrap.classList.add('active');
+    setTimeout(() => input.focus(), 250);
+    if (!loaded && !loading) buildIndex();
+  }
+  function closeSearch() {
     input.value = '';
     results.innerHTML = '';
+    wrap.classList.remove('has-results');
     wrap.classList.remove('active');
-    wrap.classList.remove('has-text');
   }
+
+  toggle.addEventListener('click', () => { openSearch(); });
+  clearBtn.addEventListener('click', () => { input.value = ''; results.innerHTML = ''; wrap.classList.remove('has-results'); input.focus(); });
 
   let timer;
   input.addEventListener('input', (e) => {
-    const v = e.target.value;
-    wrap.classList.toggle('has-text', !!v);
     clearTimeout(timer);
-    timer = setTimeout(() => search(v), 150);
+    timer = setTimeout(() => search(e.target.value), 150);
   });
   input.addEventListener('focus', () => {
     if (input.value) search(input.value);
-    if (!loaded && !loading) buildIndex();
   });
-  clearBtn.addEventListener('click', () => { clearSearch(); input.focus(); });
+  /* 点击外部关闭 */
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.app-search')) wrap.classList.remove('active');
+    if (!e.target.closest('.app-search')) closeSearch();
   });
+  /* 键盘快捷 */
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== input && !e.ctrlKey && !e.metaKey) {
-      e.preventDefault(); input.focus();
+      e.preventDefault();
+      if (!wrap.classList.contains('active')) openSearch();
+      else input.focus();
     }
-    if (e.key === 'Escape') { clearSearch(); input.blur(); }
-    if (wrap.classList.contains('active')) {
+    if (e.key === 'Escape') closeSearch();
+    if (wrap.classList.contains('has-results')) {
       const items = results.querySelectorAll('.result-item');
       if (!items.length) return;
       if (e.key === 'ArrowDown') {
