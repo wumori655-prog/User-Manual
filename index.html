@@ -61,20 +61,25 @@
 
     /* Tabs(顶部模块切换) */
     .app-tabs {
-      flex: 1;
       display: flex;
-      align-items: center;
+      align-items: stretch;       /* 子元素拉伸到 header 高度 */
       gap: 4px;
-      overflow-x: auto;
       height: 100%;
     }
     .app-tab {
-      padding: 0 14px; height: 100%;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13.5px; color: var(--text-light);
-      cursor: pointer; text-decoration: none;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;        /* 文字垂直居中 */
+      justify-content: center;
+      gap: 6px;
+      font-size: 13.5px;
+      color: var(--text-light);
+      cursor: pointer;
+      text-decoration: none;
       border-bottom: 2px solid transparent;
-      transition: all .15s; white-space: nowrap;
+      transition: all .15s;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
     .app-tab:hover { color: var(--theme-color); }
     .app-tab.active {
@@ -91,6 +96,7 @@
       height: 36px;
       display: flex;
       align-items: center;
+      margin-left: auto;  /* 推到 header 最右 */
     }
     /* 默认:只显示图标按钮 */
     .app-search-toggle {
@@ -109,10 +115,10 @@
       border-color: var(--theme-color);
       color: var(--theme-color);
     }
-    /* 展开态:输入框宽度 300px,从右向左展开 */
+    /* 展开态:输入框 300px,从图标处向左展开(因为图标在 header 最右) */
     .app-search-input-wrap {
       position: absolute;
-      right: 0;
+      right: 0;     /* 紧靠图标右边界 */
       top: 0;
       width: 0;
       height: 36px;
@@ -122,7 +128,7 @@
       align-items: center;
     }
     .app-search.active .app-search-input-wrap {
-      width: 300px;
+      width: 300px;       /* 展开 300px,从右往左铺开 */
     }
     .app-search.active .app-search-toggle {
       opacity: 0;
@@ -316,11 +322,14 @@
     relativePath: false,
     alias: {
       '/.*/_sidebar.md': '/_sidebar.md',
+      '/.*/_navbar.md': '/_navbar.md',
     },
+    /* sidebar 即使空也保留位置 */
+    nameLink: '#/',
     plugins: [
       function (hook) {
         hook.doneEach(function () {
-          const hash = location.hash.replace(/^#\//, '');
+          const hash = location.hash.replace(/^#\//, '').split('?')[0];
           const tabs = document.querySelectorAll('.app-tab');
           tabs.forEach(t => {
             const m = t.getAttribute('data-module');
